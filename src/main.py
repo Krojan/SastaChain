@@ -15,7 +15,7 @@ app.json.sort_keys = False
 app.config['HOST'] = os.getenv('HOST', '127.0.0.1')
 app.config['PORT'] = int(os.getenv('PORT', 9000))
 app.config['DEBUG'] = os.getenv('DEBUG', 'False').lower() in ('true', '1', 'yes')
-app.config['HOSTNAME'] = os.getenv('HOSTNAME', 'sastaCoin')
+app.config['HOSTNAME'] = os.getenv('HOSTNAME', 'sastaHost')
 
 
 @app.route('/')
@@ -33,7 +33,7 @@ def mine():
     previous_hash = blockchain.hash(previous_block)
     
     new_proof, proof_hash = blockchain.proof_of_work(previous_proof)  
-    blockchain.add_transaction(node_address, 'iReceiver', amount=0.69)
+    blockchain.add_transaction(node_address, app.config['HOSTNAME'], amount=0.69)
     new_block = blockchain.create_block(new_proof, previous_hash=previous_hash)
     response = {
         'message': "Congratulations, you have mined a new block",
