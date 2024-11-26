@@ -1,0 +1,34 @@
+services:
+    node_5001:
+        build: .
+        command: python3 main.py
+        environment:
+            PORT: 5001
+            HOSTNAME: "Node5001"
+        ports:
+            - 5001:5001
+        volumes: 
+            - .:/GaribChain
+
+    node_5002:
+        build: .
+        command: python3 main.py
+        environment:
+            PORT: 5002
+            HOSTNAME: "Node5002"
+        ports:
+            - 5002:5002
+        volumes: 
+            - .:/GaribChain
+    
+    node_5003:
+        build: .
+        command: python3 main.py
+        environment:
+            PORT: 5003
+            HOSTNAME: Node5003
+        ports:
+            - "5003:5003"
+        volumes: 
+            - .:/GaribChain
+  
