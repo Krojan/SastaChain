@@ -1,10 +1,8 @@
 from blockchain import Blockchain
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from dotenv import load_dotenv
 import os
 import uuid
-import requests
-
 
 load_dotenv()
 
@@ -12,8 +10,8 @@ blockchain = Blockchain()
 node_address = str(uuid.uuid5(uuid.NAMESPACE_DNS, 'localhost')).replace('-', '')
 app = Flask(__name__)
 app.json.sort_keys = False
-app.config['HOST'] = os.getenv('HOST', '127.0.0.1')
-app.config['PORT'] = int(os.getenv('PORT', 9000))
+app.config['HOST'] = os.getenv('HOST', '0.0.0.0')
+app.config['PORT'] = int(os.getenv('PORT', 8000))
 app.config['DEBUG'] = os.getenv('DEBUG', 'False').lower() in ('true', '1', 'yes')
 app.config['HOSTNAME'] = os.getenv('HOSTNAME', 'sastaHost')
 
@@ -62,11 +60,11 @@ def is_valid():
 
 @app.route('/add_transaction', methods = ['POST'])
 def add_transaction():
-    json = requests.get_json()
+    json = request.get_json()
     transaction_keys = ['sender', 'receiver', 'amount']
     
     #check if all keys are available in json
-    if not all (keys in json for key in transaction_keys):
+    if not all (key in json for key in transaction_keys):
         return "some part of transactions missing", 400
     index = blockchain.add_transaction(sender=json['sender'], receiver=json['receiver'], amount=json['amount'])
     response = {'message': f'This transaction will be added to the block {index}'}
@@ -74,7 +72,7 @@ def add_transaction():
 
 @app.route('/connect_nodes', methods = ['POST'])
 def connect_nodes():
-    json = requests.get_json()
+    json = request.get_json()
     nodes = json['nodes']
     if nodes is None:
         return "No nodes configured", 400
