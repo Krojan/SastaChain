@@ -101,17 +101,19 @@ class Blockchain:
         nodes = self.nodes
         max_length = len(self.chain)
         longest_chain = None
-        
+                
         for node in nodes:
-            response = requests.get(f"http://{node}/chain")
-            
-            if response.status_code == 200:
-                chain = response.json()['chain']
-                length = response.json()['length']
-            
-                if length > max_length and self.is_chain_valid(chain):
-                    longest_chain = chain
-                    max_length = length
+            try:
+                response = requests.get(f"http://{node}/chain")     
+                if response.status_code == 200:
+                    chain = response.json()['chain']
+                    length = response.json()['length']
+                
+                    if length > max_length and self.is_chain_valid(chain):
+                        longest_chain = chain
+                        max_length = length
+            except Exception as e:
+                print(f"Error : {e}")
                     
         if longest_chain:
             self.chain = longest_chain
